@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather App - Prodigy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Blue Gradient Square */
+        .square {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #1e3cff, #00b4ff);
+            border-radius: 12px;
+            margin: 15px auto;
+        }
+
+        /* Gradient Circle */
+        .circle {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #00eaff, #2563eb);
+            border-radius: 50%;
+            margin: 15px auto;
+        }
+
+        .container {
+            background: #1e293b;
+            padding: 25px;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            color: white;
+        }
+
+        #weather {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Decorative Shapes -->
+    <div class="square"></div>
+    <div class="circle"></div>
+    <div class="square"></div>
+
+    <div class="container">
+        <h2>🌤 Weather App</h2>
+
+        <button onclick="getLocationWeather()">Use My Location</button>
+
+        <div id="weather"></div>
+    </div>
+
+<script>
+function getLocationWeather() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayWeather(data);
+                })
+                .catch(error => {
+                    document.getElementById("weather").innerHTML = "Error fetching data ❌";
+                });
+        });
+    } else {
+        alert("Geolocation is not supported in this browser.");
+    }
+}
+
+function displayWeather(data) {
+
+    const weather = data.current_weather;
+
+    document.getElementById("weather").innerHTML = `
+        <h3>📍 Your Location Weather</h3>
+        <p>🌡 Temperature: ${weather.temperature}°C</p>
+        <p>💨 Wind Speed: ${weather.windspeed} km/h</p>
+        <p>🕒 Time: ${weather.time}</p>
+    `;
+}
+</script>
+
+</body>
+</html>
